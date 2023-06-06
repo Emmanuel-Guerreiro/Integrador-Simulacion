@@ -12,6 +12,6 @@ class Client:
         return f"Client: arrival: {self.arrival_time} | start: {self.service_start_time} | duration: {self.service_duration}"
 
     def calc_service_end_time(self) -> int:
-        return self.service_start_time + self.service_start_time
+        return self.service_start_time + self.service_duration
 
     pass
