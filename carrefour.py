@@ -30,7 +30,6 @@ class Carrefour:
         # process. 0 seems to work fine
         # If the queue is being used (check empty_finished_queues method)
         self.queues: List[Client] = [0 for _ in range(n_queues)]
-        print(self.queues)
         pass
 
     def start_service(self, client: Client):
@@ -46,9 +45,9 @@ class Carrefour:
             # If there is a client in the queue and the time of completition
             # Is the current, end it
             if client != 0:
-                print(client)
                 end_time = client.calc_service_end_time()
                 if end_time <= self.time:
+                    self.completed.append(client)
                     self.queues[i] = 0
         return
 
@@ -87,9 +86,6 @@ class Carrefour:
                 self.empty_finished_queues()
                 if self.is_client_waiting():
                     queues = self.get_empty_queues()
-                    print(
-                        f"time: {self.time} av_queue:{len(queues)}, to_attend_clients: {len(self.clients)}"
-                    )
                     if len(queues) > 0:
                         # Assign the client to the queue and remove from
                         # waiting list

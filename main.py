@@ -37,10 +37,11 @@ class Main:
 
     def run(self):
         self.init_clients()
-        Carrefour(
+        list = Carrefour(
             max_time=MAX_WORKING_TIME, clients=self.clients, n_queues=self.n_lines
         ).run()
-
+        for c in list:
+            print(c)
         pass
 
 
