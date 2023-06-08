@@ -30,20 +30,28 @@ class Main:
         # In descended way
         last_at = 0
         for _ in range(self.n_clients):
-            at = random.randint(last_at, MAX_ARRIVAL_TIME)
+            at = random.randint(last_at, 100)
+            # last_at = at
             st = random.randint(1, MAX_SERVICE_TIME)
             self.clients.append(Client(arrival_time=at, service_time=st))
+
+        self.sort_clients()
         return
+
+    def sort_clients(self):
+        self.clients.sort()
+
+    def print_clients(self):
+        print(self.clients)
 
     def run(self):
         self.init_clients()
-        list = Carrefour(
-            max_time=MAX_WORKING_TIME, clients=self.clients, n_queues=self.n_lines
-        ).run()
-        for c in list:
-            print(c)
+        list = Carrefour(clients=self.clients, n_queues=self.n_lines).run()
+        print(list)
         pass
 
 
 if __name__ == "__main__":
-    Main(n_clients=10, n_lines=5).run()
+    main = Main(n_clients=10, n_lines=5)
+    # main.print_clients()
+    main.run()
