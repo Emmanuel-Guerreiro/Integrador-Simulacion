@@ -33,7 +33,7 @@ class Client:
         return NotImplemented if eq is NotImplemented else not eq
 
     def calc_service_end_time(self) -> int:
-        if not self.service_start_time or not self.service_duration:
+        if self.service_start_time==None or not self.service_duration:
             return None
         return self.service_start_time + self.service_duration
 

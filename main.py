@@ -3,6 +3,7 @@ from typing import List
 
 from carrefour import Carrefour
 from client import Client
+from coto import Coto
 
 MAX_SERVICE_TIME = 100
 MAX_ARRIVAL_TIME = 100
@@ -46,12 +47,14 @@ class Main:
 
     def run(self):
         self.init_clients()
-        list = Carrefour(clients=self.clients, n_queues=self.n_lines).run()
-        print(list)
+        #list = Carrefour(clients=self.clients, n_queues=self.n_lines).run()
+        #print(list)
+
+        list = Coto(clients=self.clients, n_queues=self.n_lines, max_time=MAX_WORKING_TIME).run()
         pass
 
 
 if __name__ == "__main__":
-    main = Main(n_clients=10, n_lines=5)
+    main = Main(n_clients=10, n_lines=1)
     # main.print_clients()
     main.run()
