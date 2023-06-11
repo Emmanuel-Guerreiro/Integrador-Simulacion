@@ -1,13 +1,11 @@
-import random
 from typing import List
 
-import matplotlib.pyplot as plt
 import numpy as np
-import scipy.stats as spy
 
 from carrefour import Carrefour
 from client import Client
 from coto import Coto
+from util import Random
 
 MAX_SERVICE_TIME = 100
 MAX_ARRIVAL_TIME = 100
@@ -52,31 +50,8 @@ class Main:
         self.sort_clients()
         return
 
-    def generate_normal_distribution(self, mean, deviation, min, max, amount):
-        """
-        Generate N int values, based on a normal distribution in the range [min, max].
-        """
-        # When the values are cleaned (set as int and limited to the
-        # valid range) the distribution may not be normal.
-        # Will try again while the distribution is not normal
-        iter = 0
-        while True:
-            s = np.rint(np.random.normal(mean, deviation, amount * 2))
-            cleaned = [i for i in s if i >= min and i <= max]
-            cleaned = cleaned[:amount]
-            if self.is_normal_distribution(cleaned):
-                return cleaned
-
-            if iter == 100:
-                raise Exception("reached: Service time generation limit")
-            iter += 1
-
-    def is_normal_distribution(self, values, p_value=0.05) -> bool:
-        _, pvalue = spy.chisquare(values)
-        return pvalue > p_value
-
     def init_service_times(self, mean, deviation, min, max, amount) -> List[int]:
-        return self.generate_normal_distribution(
+        return Random().generate_normal_distribution(
             mean=mean, amount=amount, deviation=deviation, min=min, max=max
         )
 
@@ -92,14 +67,14 @@ class Main:
         print(f"TOTAL: {total}")
         iter = 0
         while True:
-            morning = self.generate_normal_distribution(
+            morning = Random().generate_normal_distribution(
                 mean=3.647,
                 deviation=1.9,
                 amount=int(total),
                 min=min_arrival,
                 max=max_arrival,
             )
-            afternoon = self.generate_normal_distribution(
+            afternoon = Random().generate_normal_distribution(
                 mean=10,
                 deviation=1.9,
                 amount=int(total),

@@ -2,20 +2,6 @@ from typing import List, Tuple
 
 from client import Client, ClientType
 
-# What to fix:
-#   Actualmente estoy pasando la lista por referencia y le voy haciendo pop
-#   El problema es que necesito retornarlos a la clase que lo llame,
-#   Poder sacar estadisticos.
-
-#   Entonces, una opcion es armar una clase de queue propia que
-#   no borre cosas, si no que vaya moviendo un index. Y que un get_first
-#   o algo asi me de el proximo elemento a trabajar
-
-#   Porque si trabajo con el idx en la misma clase del carrefour,
-#   y voy haciendo controles, se ensucia demasiado la logica
-
-# Handle multiples available clients at the same time
-
 
 class Carrefour:
     def __init__(self, n_queues, clients: List[ClientType]) -> None:
