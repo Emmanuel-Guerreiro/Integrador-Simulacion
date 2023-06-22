@@ -25,8 +25,9 @@ class Plot:
     def plot_results(c_carrefour: List[ClientType], c_coto: List[ClientType]):
         fig, axs = plt.subplots(3, 2)
         fig.suptitle("Resultados de la simulacion")
-        for ax in axs[0]:
-            ax.hist([c.calc_service_end_time() for c in c_carrefour])
+
+        axs[0][0].hist([c.calc_service_end_time() for c in c_carrefour])
+        axs[0][1].hist([c.calc_service_end_time() for c in c_coto])
         fig.tight_layout()
         save_path = os.path.join(os.getcwd(), "results", "resultados.png")
         plt.savefig(save_path)
@@ -52,7 +53,7 @@ class Random:
             if self.is_normal_distribution(cleaned):
                 return cleaned
 
-            if iter == 100:
+            if iter == 10000:
                 raise Exception("reached: Service time generation limit")
             iter += 1
 

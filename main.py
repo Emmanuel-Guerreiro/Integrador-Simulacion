@@ -1,9 +1,10 @@
+import copy
 from typing import List
 
 import numpy as np
 
 from carrefour import Carrefour
-from client import Client
+from client import Client, ClientType
 from coto import Coto
 from util import Random
 
@@ -30,7 +31,7 @@ class Main:
     ) -> None:
         self.n_clients = n_clients
         self.n_lines = n_lines
-        self.clients: List[Client] = []  # A stack
+        self.clients: List[ClientType] = []  # A stack
         self.service_init = service_init_hour
         self.service_end = service_end_hour
         self.results: dict = {}
@@ -64,7 +65,6 @@ class Main:
 
         For more information, check the project documentation
         """
-        print(f"TOTAL: {total}")
         iter = 0
         while True:
             morning = Random().generate_normal_distribution(
@@ -94,19 +94,30 @@ class Main:
         self.clients.sort()
 
     def run(self):
-        print(self.clients)
-        self.results["coto"] = Coto(
-            clients=self.clients, n_queues=self.n_lines, max_time=MAX_WORKING_TIME
-        ).run()
-        pass
+
+        coto_copy = copy.deepcopy(self.clients)
+        coto = Coto(clients=coto_copy, n_queues=self.n_lines, max_time=MAX_WORKING_TIME)
+        self.results["coto"] = coto.run
+        carrefour_copy = copy.deepcopy(self.clients)
+        carrefour = Carrefour(
+            clients=carrefour_copy,
+            n_queues=self.n_lines,
+        )
+        self.results["carrefour"] = carrefour.run()
+
+        print(carrefour.completed)
+        print(f"Dropped clients: {len(carrefour.dropped_clients)}")
+        print(carrefour.dropped_clients)
 
 
 if __name__ == "__main__":
-    main = Main(n_clients=1000, n_lines=1, service_init_hour=0, service_end_hour=12)
+    main = Main(n_clients=10, n_lines=1, service_init_hour=0, service_end_hour=12)
     main.init_clients(15, 1, 5, 30)
     main.run()
 
-    from util import Plot
+    # from util import Plot
 
-    Plot.plot_simulation_values(main.clients)
-    Plot.plot_results(c_carrefour=main.results["coto"], c_coto=[])
+    # Plot.plot_simulation_values(main.clients)
+    # Plot.plot_results(
+    #     c_carrefour=main.results["carrefour"], c_coto=main.results["coto"]
+    # )
