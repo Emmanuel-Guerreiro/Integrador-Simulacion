@@ -26,9 +26,8 @@ class Coto:
         """
         Check if the first client in the queue is done
         """
-        if len(queue) > 0:
-            if queue[0].calc_service_end_time() <= self.time:
-                self.completed.append(queue.pop(0))
+        if len(queue) > 0 and queue[0].calc_service_end_time() <= self.time:
+            self.completed.append(queue.pop(0))
         return
 
     def attend_client(self, queue: List[Client]):
@@ -70,6 +69,8 @@ class Coto:
 
                 # Add client to the queue with less clients
                 self.add_client_to_queue(self.clients)
+                # Drop the clients that got tired of waiting from the queues
+                self.drop_clients()
 
                 # Check if the clients in the queues are done and attend the first client
                 for queue in self.queues:

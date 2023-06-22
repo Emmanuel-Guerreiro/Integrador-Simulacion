@@ -14,7 +14,6 @@ class Carrefour:
         # completed clients to a different list, makes it easier
         # to send data back to the main method
         self.completed = []
-        self.client_index = 0
         # Dont mix completed and dropped list because makes it easier for
         # Checking and
         self.dropped_clients = []
@@ -120,11 +119,10 @@ class Carrefour:
             if client.will_drop_on_time(t=self.time):
                 client.drop_time = self.time
                 self.dropped_clients.append(client)
-                print(f"idx {idx} | client: {client}")
-                print(self.clients[idx])
+                # print(f"idx {idx} | client: {client}")
+                # print(self.clients[idx])
                 self.clients.pop(idx)
-
-                print(f"L: {len(self.clients)} \n Post drop:{self.clients}")
+                # print(f"L: {len(self.clients)} \n Post drop:{self.clients}")
         return
 
     def run(self) -> List[ClientType]:

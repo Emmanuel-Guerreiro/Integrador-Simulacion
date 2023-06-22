@@ -58,9 +58,11 @@ class Client:
     def will_drop_on_time(self, t) -> bool:
         """Will drop arrived clients based on the drop rate at the
         instant t"""
-        return t > self.arrival_time and np.random.uniform(
-            high=1, low=0
-        ) < self.get_drop_rate(t)
+        return (
+            t > self.arrival_time
+            and self.service_start_time is None
+            and np.random.uniform(high=1, low=0) < self.get_drop_rate(t)
+        )
 
 
 ClientType = Type[Client]
