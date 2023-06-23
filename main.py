@@ -1,124 +1,61 @@
-import copy
 from typing import List
 
 import numpy as np
 
-from carrefour import Carrefour
-from client import Client, ClientType
-from coto import Coto
-from util import Random
-
-MAX_SERVICE_TIME = 100
-MAX_ARRIVAL_TIME = 100
-# This is just a security flag
-MAX_WORKING_TIME = (MAX_SERVICE_TIME + MAX_ARRIVAL_TIME) * 2
+from client import ClientType
+from simulation import Simulation
 
 
-class Main:
-    """
-    Clients: It is a stack because is easier to move to the following
-    client inside the algorithms (Just pop from the non completed
-    clients list). The stack will be storted by arrival time in descended
-    order
-    """
+def get_means_from_values(vs: List[List[int]]) -> List[float]:
+    return [np.mean(v) for v in vs]
 
-    def __init__(
-        self,
-        n_clients: int,
-        n_lines: int,
-        service_init_hour: int,
-        service_end_hour: int,
-    ) -> None:
-        self.n_clients = n_clients
-        self.n_lines = n_lines
-        self.clients: List[ClientType] = []  # A stack
-        self.service_init = service_init_hour
-        self.service_end = service_end_hour
-        self.results: dict = {}
-        pass
 
-    def init_clients(self, mean, deviation, min, max):
-        services = self.init_service_times(
-            mean, deviation, min, max, amount=self.n_clients
+def run_with_variable_clients(
+    n_clients: List[int], n_queues: int, service_time_mean: int
+):
+    print("--------------------------------------\n")
+    print("Running with variables clients: ")
+    result = {
+        "x": n_clients,
+        "carrefour": [],
+        "coto": [],
+        "title": "Number of clients variable",
+        "xlabel": "Number of clients",
+        "ylable": "Attendance mean",
+    }
+    carrefour_clients: List[List[ClientType]] = []
+    coto_clients: List[List[ClientType]] = []
+    for n in n_clients:
+        print(n)
+        simulation = Simulation(
+            n_clients=n, n_lines=n_queues, service_init_hour=0, service_end_hour=12
         )
-        arrivals = self.init_arrival_times(
-            total=self.n_clients, min_arrival=0, max_arrival=12
+        simulation.init_clients(service_time_mean, 1, 5, 30)
+        simulation.run()
+        carrefour_clients.append(simulation.results["carrefour"])
+        coto_clients.append(simulation.results["coto"])
+
+    print("Building reports...")
+    print("Carrefour: \n")
+    carrefour_waiting_times = []
+    for list in carrefour_clients:
+        carrefour_waiting_times.append(
+            [c.service_start_time - c.arrival_time for c in list]
         )
-        for i in range(len(services)):
-            c = Client(arrival_time=arrivals[i], service_time=services[i])
-            self.clients.append(c)
+    print(f"Medias_carrefour: {get_means_from_values(carrefour_waiting_times)}")
 
-        self.sort_clients()
-        return
+    coto_waiting_times = []
+    for list in coto_clients:
+        coto_waiting_times.append([c.service_start_time - c.arrival_time for c in list])
+    print(f"Medias coto: {get_means_from_values(coto_waiting_times)}")
+    print(f"Tiempos: {n_clients}")
+    print(f"Coto: \n")
+    print(coto_clients)
+    print("--------------------------------------")
 
-    def init_service_times(self, mean, deviation, min, max, amount) -> List[int]:
-        return Random().generate_normal_distribution(
-            mean=mean, amount=amount, deviation=deviation, min=min, max=max
-        )
-
-    def init_arrival_times(self, total, min_arrival, max_arrival):
-        """
-        The histogram of supermarket population during the day, shows
-        two local max, at 12pm and 6pm.
-        Two normal distribution, with different means, and the same deviation,
-        generate considerably good values
-
-        For more information, check the project documentation
-        """
-        iter = 0
-        while True:
-            morning = Random().generate_normal_distribution(
-                mean=3.647,
-                deviation=1.9,
-                amount=int(total),
-                min=min_arrival,
-                max=max_arrival,
-            )
-            afternoon = Random().generate_normal_distribution(
-                mean=10,
-                deviation=1.9,
-                amount=int(total),
-                min=min_arrival,
-                max=max_arrival,
-            )
-            concat = np.concatenate((morning, afternoon))
-            if len(concat) > total:
-                arrivals = np.random.choice(concat, total)
-                return arrivals
-
-            if iter == 0:
-                raise Exception("reached: Arrival times generation limit")
-            iter += 1
-
-    def sort_clients(self):
-        self.clients.sort()
-
-    def run(self):
-
-        coto_copy = copy.deepcopy(self.clients)
-        coto = Coto(clients=coto_copy, n_queues=self.n_lines, max_time=MAX_WORKING_TIME)
-        self.results["coto"] = coto.run()
-
-        carrefour_copy = copy.deepcopy(self.clients)
-        carrefour = Carrefour(
-            clients=carrefour_copy,
-            n_queues=self.n_lines,
-        )
-        self.results["carrefour"] = carrefour.run()
-
-        print(coto.completed)
-        print(f"Dropped clients: {len(coto.dropped_clients)}")
-        print(coto.dropped_clients)
+    return
 
 
 if __name__ == "__main__":
-    main = Main(n_clients=10, n_lines=1, service_init_hour=0, service_end_hour=12)
-    main.init_clients(15, 1, 5, 30)
-    main.run()
 
-    # from util import Plot
-
-    # Plot.plot_simulation_values(main.clients)
-    # Plot.plot_results(
-    #     c_carrefour=main.results["carrefour"], c_coto=main.results["coto"]
-    # )
+    run_with_variable_clients([10, 20, 30], 2, 15)
