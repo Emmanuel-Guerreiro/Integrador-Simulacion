@@ -68,7 +68,7 @@ class Main:
         iter = 0
         while True:
             morning = Random().generate_normal_distribution(
-                mean=3.647,
+                mean=4,
                 deviation=1.9,
                 amount=int(total),
                 min=min_arrival,
@@ -82,6 +82,8 @@ class Main:
                 max=max_arrival,
             )
             concat = np.concatenate((morning, afternoon))
+
+            #print (concat)
             if len(concat) > total:
                 arrivals = np.random.choice(concat, total)
                 return arrivals
@@ -105,19 +107,16 @@ class Main:
         )
         self.results["carrefour"] = carrefour.run()
 
-        print(carrefour.completed)
-        print(f"Dropped clients: {len(carrefour.dropped_clients)}")
-        print(carrefour.dropped_clients)
+        #print(carrefour.completed)
+        #print(f"Dropped clients: {len(carrefour.dropped_clients)}")
+        #print(carrefour.dropped_clients)
 
 
 if __name__ == "__main__":
-    main = Main(n_clients=10, n_lines=1, service_init_hour=0, service_end_hour=12)
+    main = Main(n_clients=500, n_lines=3, service_init_hour=0, service_end_hour=12)
     main.init_clients(15, 1, 5, 30)
     main.run()
 
-    # from util import Plot
+    from util import Plot
 
-    # Plot.plot_simulation_values(main.clients)
-    # Plot.plot_results(
-    #     c_carrefour=main.results["carrefour"], c_coto=main.results["coto"]
-    # )
+    Plot.plot_simulation_values(main.clients)

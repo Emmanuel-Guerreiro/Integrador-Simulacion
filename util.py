@@ -11,28 +11,34 @@ from client import ClientType
 class Plot:
     def plot_simulation_values(clients: List[ClientType]):
         fig, ax = plt.subplots(2)
-        fig.suptitle("Tiempos del sistema")
-        ax[0].hist([c.arrival_time for c in clients])
-        ax[0].set_title("Tiempo de llegada")
-        ax[1].hist([c.service_duration for c in clients])
-        ax[1].set_title("Duracion del servicio")
+        fig.suptitle("Parametros sistema")
+        ax[0].hist([c.arrival_time for c in clients],bins=np.arange(0, 14, 0.5), align='left')
+        ax[0].set_title("Arrival time")
+        ax[0].set_xticks(np.arange(0, 14, 1))
+        ax[0].set_xticklabels(np.arange(8, 22, 1))
+        ax[1].hist([c.service_duration for c in clients], bins=np.arange(10, 22, 0.5), align='left' )
+        ax[1].set_title("Service duration")
+        ax[1].set_xticks(np.arange(10, 22, 1))
+        ax[1].set_xticklabels(np.arange(10, 22, 1))
         fig.tight_layout()
 
         save_path = os.path.join(os.getcwd(), "results", "datos-sistema.png")
         plt.savefig(save_path)
         return
-
-    def plot_results(c_carrefour: List[ClientType], c_coto: List[ClientType]):
-        fig, axs = plt.subplots(3, 2)
-        fig.suptitle("Resultados de la simulacion")
-
-        axs[0][0].hist([c.calc_service_end_time() for c in c_carrefour])
-        axs[0][1].hist([c.calc_service_end_time() for c in c_coto])
+    
+    def plot_results(data):
+        fig,ax = plt.subplots()
+        ax.set_title(data['title'])
+        ax.plot(data['x'], data['carrefour'])
+        ax.plot(data['x'], data['coto'])
+        ax.set_xlabel(data['xlabel'])
+        ax.set_ylabel(data['ylabel'])
+        ax.legend(['Carrefour', 'Coto'])
         fig.tight_layout()
-        save_path = os.path.join(os.getcwd(), "results", "resultados.png")
+        ax.set_xticks(data['x'])
+        save_path = os.path.join(os.getcwd(), "results", data['title'] + ".png")
         plt.savefig(save_path)
         return
-
 
 class Random:
     def __init__(self) -> None:

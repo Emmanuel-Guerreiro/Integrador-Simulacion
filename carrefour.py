@@ -110,7 +110,7 @@ class Carrefour:
             self.queues[av_idx] = client_to_assign
 
             self.clients.remove(client_to_assign)
-            print(f"L: {len(self.clients)} \n  Post assign:{self.clients}")
+            #print(f"L: {len(self.clients)} \n  Post assign:{self.clients}")
             self.start_service(client_to_assign)
 
         return
@@ -120,17 +120,17 @@ class Carrefour:
             if client.will_drop_on_time(t=self.time):
                 client.drop_time = self.time
                 self.dropped_clients.append(client)
-                print(f"idx {idx} | client: {client}")
-                print(self.clients[idx])
+                #print(f"idx {idx} | client: {client}")
+                #print(self.clients[idx])
                 self.clients.pop(idx)
 
-                print(f"L: {len(self.clients)} \n Post drop:{self.clients}")
+                #print(f"L: {len(self.clients)} \n Post drop:{self.clients}")
         return
 
     def run(self) -> List[ClientType]:
         # For + If instead of while avoids infinite loops
 
-        print(f"L: {len(self.clients)} \n Start clients: {self.clients}")
+        #print(f"L: {len(self.clients)} \n Start clients: {self.clients}")
 
         while len(self.clients) > 0 or self.is_some_queue_busy():
             self.drop_clients()
