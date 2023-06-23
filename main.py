@@ -99,7 +99,8 @@ class Main:
 
         coto_copy = copy.deepcopy(self.clients)
         coto = Coto(clients=coto_copy, n_queues=self.n_lines, max_time=MAX_WORKING_TIME)
-        self.results["coto"] = coto.run
+        self.results["coto"] = coto.run()
+
         carrefour_copy = copy.deepcopy(self.clients)
         carrefour = Carrefour(
             clients=carrefour_copy,
@@ -107,9 +108,9 @@ class Main:
         )
         self.results["carrefour"] = carrefour.run()
 
-        #print(carrefour.completed)
-        #print(f"Dropped clients: {len(carrefour.dropped_clients)}")
-        #print(carrefour.dropped_clients)
+        print(coto.completed)
+        print(f"Dropped clients: {len(coto.dropped_clients)}")
+        print(coto.dropped_clients)
 
 
 if __name__ == "__main__":

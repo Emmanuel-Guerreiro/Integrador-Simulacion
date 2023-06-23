@@ -14,7 +14,6 @@ class Carrefour:
         # completed clients to a different list, makes it easier
         # to send data back to the main method
         self.completed = []
-        self.client_index = 0
         # Dont mix completed and dropped list because makes it easier for
         # Checking and
         self.dropped_clients = []
