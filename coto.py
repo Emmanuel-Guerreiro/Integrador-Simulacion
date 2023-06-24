@@ -10,7 +10,7 @@ class Coto:
         self.clients = clients
         self.dropped_clients = []
         # Count the number of queues that are not being used at each time t
-        self.useless_queues_in_time = []
+        self.idle_queues_in_time = []
 
         # We create a list of queues where each queue is a list of clients
         self.queues: List[List[Client]] = [[] for _ in range(n_queues)]
@@ -63,9 +63,11 @@ class Coto:
                     self.dropped_clients.append(client)
                     queue.pop(idx)
         return
-    
+
     def useless_queues(self):
-        return len(self.queues)-len([queue for queue in self.queues if len(queue) > 0])
+        return len(self.queues) - len(
+            [queue for queue in self.queues if len(queue) > 0]
+        )
 
     def run(self):
 
@@ -79,9 +81,9 @@ class Coto:
                 for queue in self.queues:
                     self.attend_client(queue)
                     self.check_queue(queue)
-                #Count the number of queues that are not being used at each time t
-                self.useless_queues_in_time.append(self.useless_queues())
-                
+                # Count the number of queues that are not being used at each time t
+                self.idle_queues_in_time.append(self.useless_queues())
+
                 self.time += 1
 
         return self

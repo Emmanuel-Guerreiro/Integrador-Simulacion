@@ -25,7 +25,7 @@ class Carrefour:
         self.n_queues = n_queues
         self.queues: List = [None for _ in range(n_queues)]
         # Count the number of queues that are not being used at each time t
-        self.useless_queues_in_time = []
+        self.idle_queues_in_time = []
         pass
 
     def is_some_queue_busy(self):
@@ -134,7 +134,7 @@ class Carrefour:
                 self.drop_clients()
                 self.empty_finished_queues()
                 self.assign_client_to_queue()
-                self.useless_queues_in_time.append(self.get_useless_queues())
+                self.idle_queues_in_time.append(self.get_useless_queues())
                 self.time += 1
 
         self.completed.sort()

@@ -20,6 +20,18 @@ def run_with_variable_clients(
         "xlabel": "Number of clients",
         "ylabel": "Attendance mean",
     }
+
+    idle_result = {
+        "x": n_clients,
+        "carrefour": [],
+        "coto": [],
+        "title": f"Mean idle queues with {n_queues} servers",
+        "xlabel": "Number of clients",
+        "ylabel": "Idle servers mean",
+    }
+
+    carrefour_idle: List[float] = []
+    coto_idle: List[float] = []
     carrefour_clients: List[List[ClientType]] = []
     coto_clients: List[List[ClientType]] = []
     for n in n_clients:
@@ -29,6 +41,8 @@ def run_with_variable_clients(
         simulation.run()
         carrefour_clients.append(simulation.results["carrefour"])
         coto_clients.append(simulation.results["coto"])
+        carrefour_idle.append(simulation.mean_idle["carrefour"])
+        coto_idle.append(simulation.mean_idle["coto"])
 
     print("Building reports...")
     print("Carrefour: \n")
@@ -46,6 +60,11 @@ def run_with_variable_clients(
     Plot.plot_results(result)
     print(f"Medias coto: {Util.get_means_from_values(coto_waiting_times)}")
     print(f"Tiempos: {n_clients}")
+
+    idle_result["carrefour"] = carrefour_idle
+    idle_result["coto"] = coto_idle
+    Plot.plot_results(idle_result)
+
     print("--------------------------------------")
     return (result["carrefour"], result["coto"])
 
@@ -64,6 +83,17 @@ def run_with_variable_queues(
         "ylabel": "Attendance mean",
     }
 
+    idle_result = {
+        "x": n_queues,
+        "carrefour": [],
+        "coto": [],
+        "title": f"Mean idle queues with {n_clients} clients",
+        "xlabel": "Number of servers",
+        "ylabel": "Idle servers mean",
+    }
+
+    carrefour_idle: List[float] = []
+    coto_idle: List[float] = []
     carrefour_clients: List[List[ClientType]] = []
     coto_clients: List[List[ClientType]] = []
     for q in n_queues:
@@ -73,6 +103,8 @@ def run_with_variable_queues(
         simulation.run()
         carrefour_clients.append(simulation.results["carrefour"])
         coto_clients.append(simulation.results["coto"])
+        carrefour_idle.append(simulation.mean_idle["carrefour"])
+        coto_idle.append(simulation.mean_idle["coto"])
 
     print("Building reports...")
     print("Carrefour: \n")
@@ -91,6 +123,12 @@ def run_with_variable_queues(
 
     print(f"Medias coto: {Util.get_means_from_values(coto_waiting_times)}")
     print(f"Tiempos: {n_clients}")
+
+    idle_result["carrefour"] = carrefour_idle
+    idle_result["coto"] = coto_idle
+    print(idle_result)
+    Plot.plot_results(idle_result)
+
     print("--------------------------------------")
     return
 
@@ -118,10 +156,11 @@ def run_with_all_variable(
     times_carrefour = []
     times_coto = []
 
-    # for clients in n_clients:
-    #     run_with_variable_queues(
-    #         n_queues=n_queues, n_clients=clients, service_time_mean=service_time_mean
-    #     )
+    for clients in n_clients:
+        run_with_variable_queues(
+            n_queues=n_queues, n_clients=clients, service_time_mean=service_time_mean
+        )
+
     for queues in n_queues:
         t_carrefour, t_coto = run_with_variable_clients(
             n_clients=n_clients, n_queues=queues, service_time_mean=service_time_mean

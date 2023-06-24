@@ -24,6 +24,7 @@ class Simulation:
         self.n_lines = n_lines
         self.clients: List[ClientType] = []
         self.results: dict = {}
+        self.mean_idle: dict = {}
         pass
 
     def init_clients(self, mean, deviation, min, max):
@@ -90,7 +91,7 @@ class Simulation:
         coto = Coto(clients=coto_copy, n_queues=self.n_lines, max_time=MAX_WORKING_TIME)
 
         self.results["coto"] = coto.run().completed
-
+        self.mean_idle["coto"] = np.mean(coto.idle_queues_in_time)
         print("Clientes atendidos en Coto " + str(len(self.results["coto"])))
 
         carrefour_copy = copy.deepcopy(self.clients)
@@ -101,5 +102,6 @@ class Simulation:
         )
 
         self.results["carrefour"] = carrefour.run().completed
+        self.mean_idle["carrefour"] = np.mean(carrefour.idle_queues_in_time)
 
         print("Clientes atendidos en Carrefour " + str(len(self.results["carrefour"])))
