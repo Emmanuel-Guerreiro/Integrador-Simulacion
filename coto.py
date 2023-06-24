@@ -61,11 +61,14 @@ class Coto:
                     self.dropped_clients.append(client)
                     queue.pop(idx)
         return
+    
+    def any_queue_has_clients(self):
+        return len([queue for queue in self.queues if len(queue) > 0]) > 0
 
     def run(self):
 
         for _ in range(self.max_time):
-            if len(self.clients) > 0:
+            if len(self.clients) > 0 and self.any_queue_has_clients():
 
                 # Add client to the queue with less clients
                 self.add_client_to_queue(self.clients)

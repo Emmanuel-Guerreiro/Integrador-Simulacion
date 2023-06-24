@@ -40,6 +40,8 @@ class Plot:
         plt.savefig(save_path)
         return
 
+    
+
 class Random:
     def __init__(self) -> None:
         pass
@@ -65,4 +67,6 @@ class Random:
 
     def is_normal_distribution(self, values, p_value=0.05) -> bool:
         _, pvalue = spy.chisquare(values)
+        print("La distribucion es normal?")
+        print(pvalue)
         return pvalue > p_value
