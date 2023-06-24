@@ -47,7 +47,7 @@ def run_with_variable_clients(
     print(f"Medias coto: {Util.get_means_from_values(coto_waiting_times)}")
     print(f"Tiempos: {n_clients}")
     print("--------------------------------------")
-    return result["carrefour"]
+    return (result["carrefour"], result["coto"])
 
 
 def run_with_variable_queues(
@@ -98,28 +98,53 @@ def run_with_variable_queues(
 def run_with_all_variable(
     n_clients: List[int], n_queues: List[int], service_time_mean: int
 ):
-    result = {
+    result_carrefour = {
         "x": n_clients,
         "y": n_queues,
-        "title": "Mean waiting time",
+        "title": "Mean waiting time carrefour",
+        "xlabel": "Number of clients",
+        "ylabel": "Number of servers",
+        "top": None,
+    }
+    result_coto = {
+        "x": n_clients,
+        "y": n_queues,
+        "title": "Mean waiting time coto",
         "xlabel": "Number of clients",
         "ylabel": "Number of servers",
         "top": None,
     }
 
-    times = []
+    times_carrefour = []
+    times_coto = []
 
-    for clients in n_clients:
-        run_with_variable_queues(
-            n_queues=n_queues, n_clients=clients, service_time_mean=service_time_mean
-        )
+    # for clients in n_clients:
+    #     run_with_variable_queues(
+    #         n_queues=n_queues, n_clients=clients, service_time_mean=service_time_mean
+    #     )
     for queues in n_queues:
-        mean = run_with_variable_clients(
+        t_carrefour, t_coto = run_with_variable_clients(
             n_clients=n_clients, n_queues=queues, service_time_mean=service_time_mean
         )
-        times.append(mean)
-    result["top"] = times
-    print(result)
+        times_carrefour.append(t_carrefour)
+        times_coto.append(t_coto)
+    result_carrefour["top"] = times_carrefour
+    result_coto["top"] = times_coto
+    Plot.plot_3dHistogram(result_carrefour)
+    Plot.plot_3dHistogram(result_coto)
+
+    dirty_dif = np.array(times_coto) - np.array(times_carrefour)
+    dif = np.where(dirty_dif >= float(0), dirty_dif, float(0))
+    result_difference = {
+        "x": n_clients,
+        "y": n_queues,
+        "title": "Mean Coto - Mean Carrefour",
+        "xlabel": "Number of clients",
+        "ylabel": "Number of servers",
+        "top": dif,
+    }
+
+    Plot.plot_3dHistogram(result_difference)
     print(f"n_queues: {n_queues}")
     print(f"n_clients: {n_clients}")
     return
@@ -128,7 +153,7 @@ def run_with_all_variable(
 if __name__ == "__main__":
 
     run_with_all_variable(
-        n_queues=[1, 2, 4, 8, 12],
-        n_clients=[100, 250, 500, 750, 1000],
+        n_queues=[2, 4, 6, 8, 10, 12],
+        n_clients=[200, 400, 600, 800, 1000],
         service_time_mean=5,
     )

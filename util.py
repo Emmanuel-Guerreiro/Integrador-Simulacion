@@ -51,31 +51,32 @@ class Plot:
         plt.savefig(save_path)
         plt.close()
         return
-    
+
     def plot_3dHistogram(data):
         # set up the figure and axes
         fig = plt.figure(figsize=(10, 10))
-        ax1 = fig.add_subplot(projection='3d')
-
+        ax1 = fig.add_subplot(projection="3d")
 
         # fake data
-        _x = data['x']
-        _y = data['y']
+        _x = data["x"]
+        _y = data["y"]
         _xx, _yy = np.meshgrid(_x, _y)
         x, y = _xx.ravel(), _yy.ravel()
 
-        top = np.ravel(data['top'])
+        top = np.ravel(data["top"])
         bottom = np.zeros_like(top)
-        width = depth = 1
+        width = 100
+        depth = 1
 
         ax1.bar3d(x, y, bottom, width, depth, top, shade=True)
-        ax1.set_title(data['title'])
-        ax1.set_xlabel(data['xlabel'])
-        ax1.set_ylabel(data['ylabel'])
-        save_path = os.path.join(os.getcwd(), "results", data['title'] + ".png")
+        ax1.set_title(data["title"])
+        ax1.set_xlabel(data["xlabel"])
+        ax1.set_ylabel(data["ylabel"])
+        save_path = os.path.join(os.getcwd(), "results", data["title"] + ".png")
         plt.savefig(save_path)
         return
-    
+
+
 class Random:
     def __init__(self) -> None:
         pass
