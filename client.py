@@ -64,5 +64,8 @@ class Client:
             and np.random.uniform(high=1, low=0) < self.get_drop_rate(t)
         )
 
+    def get_waiting_time(self):
+        return self.service_start_time - self.arrival_time
+
 
 ClientType = Type[Client]
