@@ -4,6 +4,7 @@ import numpy as np
 
 from client import ClientType
 from simulation import Simulation
+from util import Plot
 
 
 def get_means_from_values(vs: List[List[int]]) -> List[float]:
@@ -30,7 +31,7 @@ def run_with_variable_clients(
         simulation = Simulation(
             n_clients=n, n_lines=n_queues, service_init_hour=0, service_end_hour=12
         )
-        simulation.init_clients(service_time_mean, 1, 5, 30)
+        simulation.init_clients(service_time_mean, 1, 1, 9)
         simulation.run()
         carrefour_clients.append(simulation.results["carrefour"])
         coto_clients.append(simulation.results["coto"])
@@ -51,11 +52,13 @@ def run_with_variable_clients(
     print(f"Tiempos: {n_clients}")
     print(f"Coto: \n")
     print(coto_clients)
+    print(len(coto_clients[0]))
     print("--------------------------------------")
+
 
     return
 
 
 if __name__ == "__main__":
-
-    run_with_variable_clients([10, 20, 30], 2, 15)
+    #Clients, queues, service time mean
+    run_with_variable_clients([1000], 1, 5)

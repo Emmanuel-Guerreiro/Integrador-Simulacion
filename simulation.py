@@ -7,11 +7,12 @@ from carrefour import Carrefour
 from client import Client, ClientType
 from coto import Coto
 from util import Random
+from util import Plot
 
 MAX_SERVICE_TIME = 100
 MAX_ARRIVAL_TIME = 100
 # This is just a security flag
-MAX_WORKING_TIME = (MAX_SERVICE_TIME + MAX_ARRIVAL_TIME) * 2
+MAX_WORKING_TIME = 720
 
 
 class Simulation:
@@ -42,7 +43,7 @@ class Simulation:
             mean, deviation, min, max, amount=self.n_clients
         )
         arrivals = self.init_arrival_times(
-            total=self.n_clients, min_arrival=0, max_arrival=12
+            total=self.n_clients, min_arrival=0, max_arrival=12*60
         )
         for i in range(len(services)):
             c = Client(arrival_time=arrivals[i], service_time=services[i])
@@ -68,15 +69,15 @@ class Simulation:
         iter = 0
         while True:
             morning = Random().generate_normal_distribution(
-                mean=3.647,
-                deviation=1.9,
+                mean=240,
+                deviation=100,
                 amount=int(total),
                 min=min_arrival,
                 max=max_arrival,
             )
             afternoon = Random().generate_normal_distribution(
-                mean=10,
-                deviation=1.9,
+                mean=600,
+                deviation=100,
                 amount=int(total),
                 min=min_arrival,
                 max=max_arrival,
@@ -95,6 +96,7 @@ class Simulation:
 
     def run(self):
         coto_copy = copy.deepcopy(self.clients)
+        Plot.plot_simulation_values(coto_copy)
         coto = Coto(clients=coto_copy, n_queues=self.n_lines, max_time=MAX_WORKING_TIME)
         self.results["coto"] = coto.run()
 
