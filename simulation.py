@@ -25,6 +25,7 @@ class Simulation:
         self.clients: List[ClientType] = []
         self.results: dict = {}
         self.mean_idle: dict = {}
+        self.dropped_clients: dict = {}
         pass
 
     def init_clients(self, mean, deviation, min, max):
@@ -92,6 +93,8 @@ class Simulation:
 
         self.results["coto"] = coto.run().completed
         self.mean_idle["coto"] = np.mean(coto.idle_queues_in_time)
+        self.dropped_clients["coto"] = len(coto.dropped_clients)
+
         print("Clientes atendidos en Coto " + str(len(self.results["coto"])))
 
         carrefour_copy = copy.deepcopy(self.clients)
@@ -103,5 +106,5 @@ class Simulation:
 
         self.results["carrefour"] = carrefour.run().completed
         self.mean_idle["carrefour"] = np.mean(carrefour.idle_queues_in_time)
-
+        self.dropped_clients["carrefour"] = len(carrefour.dropped_clients)
         print("Clientes atendidos en Carrefour " + str(len(self.results["carrefour"])))

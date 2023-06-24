@@ -30,6 +30,8 @@ class Plot:
         ax[1].set_xticklabels(np.arange(1, 11, 1))
         fig.tight_layout()
 
+        if not os.path.exists(os.path.join(os.getcwd(), "results")):
+            os.mkdir(os.path.join(os.getcwd(), "results"))
         save_path = os.path.join(
             os.getcwd(), "results", f"datos-sistema-{file_append}.png"
         )
@@ -47,6 +49,9 @@ class Plot:
         ax.legend(["Carrefour", "Coto"])
         fig.tight_layout()
         ax.set_xticks(data["x"])
+        if not os.path.exists(os.path.join(os.getcwd(), "results")):
+            os.mkdir(os.path.join(os.getcwd(), "results"))
+
         save_path = os.path.join(os.getcwd(), "results", data["title"] + ".png")
         plt.savefig(save_path)
         plt.close()
@@ -72,6 +77,9 @@ class Plot:
         ax1.set_title(data["title"])
         ax1.set_xlabel(data["xlabel"])
         ax1.set_ylabel(data["ylabel"])
+        if not os.path.exists(os.path.join(os.getcwd(), "results")):
+            os.mkdir(os.path.join(os.getcwd(), "results"))
+
         save_path = os.path.join(os.getcwd(), "results", data["title"] + ".png")
         plt.savefig(save_path)
         return

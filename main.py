@@ -92,10 +92,21 @@ def run_with_variable_queues(
         "ylabel": "Idle servers mean",
     }
 
+    dropped_result = {
+        "x": n_queues,
+        "carrefour": [],
+        "coto": [],
+        "title": f"Dropped results with {n_clients} clients",
+        "xlabel": "Number of servers",
+        "ylabel": "Dropped clients amount",
+    }
+
     carrefour_idle: List[float] = []
     coto_idle: List[float] = []
     carrefour_clients: List[List[ClientType]] = []
     coto_clients: List[List[ClientType]] = []
+    coto_dropped: List[int] = []
+    carrefour_dropped: List[int] = []
     for q in n_queues:
         print(f"Clients: {n_clients}, Attenders: {q}")
         simulation = Simulation(n_clients=n_clients, n_lines=q)
@@ -105,6 +116,8 @@ def run_with_variable_queues(
         coto_clients.append(simulation.results["coto"])
         carrefour_idle.append(simulation.mean_idle["carrefour"])
         coto_idle.append(simulation.mean_idle["coto"])
+        carrefour_dropped.append(simulation.dropped_clients["carrefour"])
+        coto_dropped.append(simulation.dropped_clients["coto"])
 
     print("Building reports...")
     print("Carrefour: \n")
@@ -126,8 +139,12 @@ def run_with_variable_queues(
 
     idle_result["carrefour"] = carrefour_idle
     idle_result["coto"] = coto_idle
-    print(idle_result)
     Plot.plot_results(idle_result)
+
+    dropped_result["carrefour"] = carrefour_dropped
+    dropped_result["coto"] = coto_dropped
+
+    Plot.plot_results(dropped_result)
 
     print("--------------------------------------")
     return
