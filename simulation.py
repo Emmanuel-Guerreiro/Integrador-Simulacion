@@ -96,7 +96,7 @@ class Simulation:
 
     def run(self):
         coto_copy = copy.deepcopy(self.clients)
-        Plot.plot_simulation_values(coto_copy)
+        Plot.plot_simulation_values(coto_copy,1)
         coto = Coto(
             clients=coto_copy, 
             n_queues=self.n_lines, 
