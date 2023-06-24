@@ -97,12 +97,23 @@ class Simulation:
     def run(self):
         coto_copy = copy.deepcopy(self.clients)
         Plot.plot_simulation_values(coto_copy)
-        coto = Coto(clients=coto_copy, n_queues=self.n_lines, max_time=MAX_WORKING_TIME)
-        self.results["coto"] = coto.run()
+        coto = Coto(
+            clients=coto_copy, 
+            n_queues=self.n_lines, 
+            max_time=MAX_WORKING_TIME
+            )
+        
+        self.results["coto"] = coto.run().completed
 
+        print("Clientes atendidos en Coto "+str(len(self.results["coto"])))
+        
         carrefour_copy = copy.deepcopy(self.clients)
         carrefour = Carrefour(
+            max_time=MAX_WORKING_TIME,
             clients=carrefour_copy,
             n_queues=self.n_lines,
-        )
-        self.results["carrefour"] = carrefour.run()
+            )
+        
+        self.results["carrefour"] = carrefour.run().completed
+
+        print("Clientes atendidos en Carrefour "+str(len(self.results["carrefour"])))

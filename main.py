@@ -49,16 +49,10 @@ def run_with_variable_clients(
     for list in coto_clients:
         coto_waiting_times.append([c.service_start_time - c.arrival_time for c in list])
     print(f"Medias coto: {get_means_from_values(coto_waiting_times)}")
-    print(f"Tiempos: {n_clients}")
-    print(f"Coto: \n")
-    print(coto_clients)
-    print(len(coto_clients[0]))
-    print("--------------------------------------")
-
-
+    
     return
 
 
 if __name__ == "__main__":
     #Clients, queues, service time mean
-    run_with_variable_clients([1000], 1, 5)
+    run_with_variable_clients([1000], 8, 5)

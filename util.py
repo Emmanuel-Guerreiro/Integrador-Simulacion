@@ -9,7 +9,7 @@ from client import ClientType
 
 
 class Plot:
-    def plot_simulation_values(clients: List[ClientType]):
+    def plot_simulation_values(clients: List[ClientType], nro_simulacion:int):
         fig, ax = plt.subplots(2)
         fig.suptitle("Parametros sistema")
         ax[0].hist([c.arrival_time for c in clients],bins=np.arange(0, 14*60, 30), align='left')
@@ -22,7 +22,7 @@ class Plot:
         ax[1].set_xticklabels(np.arange(1, 11, 1))
         fig.tight_layout()
 
-        save_path = os.path.join(os.getcwd(), "results", "datos-sistema.png")
+        save_path = os.path.join(os.getcwd(), "results", "datos-sistema"+str(nro_simulacion)+".png")
         plt.savefig(save_path)
         return
     
