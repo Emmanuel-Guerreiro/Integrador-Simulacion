@@ -6,8 +6,7 @@ import numpy as np
 from carrefour import Carrefour
 from client import Client, ClientType
 from coto import Coto
-from util import Random
-from util import Plot
+from util import Plot, Random
 
 MAX_SERVICE_TIME = 100
 MAX_ARRIVAL_TIME = 100
@@ -16,25 +15,14 @@ MAX_WORKING_TIME = 720
 
 
 class Simulation:
-    """
-    Clients: It is a stack because is easier to move to the following
-    client inside the algorithms (Just pop from the non completed
-    clients list). The stack will be storted by arrival time in descended
-    order
-    """
-
     def __init__(
         self,
         n_clients: int,
         n_lines: int,
-        service_init_hour: int,
-        service_end_hour: int,
     ) -> None:
         self.n_clients = n_clients
         self.n_lines = n_lines
-        self.clients: List[ClientType] = []  # A stack
-        self.service_init = service_init_hour
-        self.service_end = service_end_hour
+        self.clients: List[ClientType] = []
         self.results: dict = {}
         pass
 
@@ -43,7 +31,7 @@ class Simulation:
             mean, deviation, min, max, amount=self.n_clients
         )
         arrivals = self.init_arrival_times(
-            total=self.n_clients, min_arrival=0, max_arrival=12*60
+            total=self.n_clients, min_arrival=0, max_arrival=12 * 60
         )
         for i in range(len(services)):
             c = Client(arrival_time=arrivals[i], service_time=services[i])
@@ -97,23 +85,19 @@ class Simulation:
     def run(self):
         coto_copy = copy.deepcopy(self.clients)
         Plot.plot_simulation_values(coto_copy,1)
-        coto = Coto(
-            clients=coto_copy, 
-            n_queues=self.n_lines, 
-            max_time=MAX_WORKING_TIME
-            )
-        
+        coto = Coto(clients=coto_copy, n_queues=self.n_lines, max_time=MAX_WORKING_TIME)
+
         self.results["coto"] = coto.run().completed
 
-        print("Clientes atendidos en Coto "+str(len(self.results["coto"])))
-        
+        print("Clientes atendidos en Coto " + str(len(self.results["coto"])))
+
         carrefour_copy = copy.deepcopy(self.clients)
         carrefour = Carrefour(
             max_time=MAX_WORKING_TIME,
             clients=carrefour_copy,
             n_queues=self.n_lines,
-            )
-        
+        )
+
         self.results["carrefour"] = carrefour.run().completed
 
-        print("Clientes atendidos en Carrefour "+str(len(self.results["carrefour"])))
+        print("Clientes atendidos en Carrefour " + str(len(self.results["carrefour"])))
