@@ -4,10 +4,11 @@ from client import Client, ClientType
 
 
 class Carrefour:
-    def __init__(self, n_queues, clients: List[ClientType]) -> None:
+    def __init__(self,max_time, n_queues, clients: List[ClientType]) -> None:
         """
         clients: A priority queue -already sorted- by ascendent arrival time
         """
+        self.max_time = max_time
         self.time = 0
         self.clients = clients
         # This is returned from run method. The idea to move the already
@@ -23,6 +24,8 @@ class Carrefour:
         # If the queue is being used (check empty_finished_queues method)
         self.n_queues = n_queues
         self.queues: List = [None for _ in range(n_queues)]
+        # Count the number of queues that are not being used at each time t
+        self.useless_queues_in_time = []
         pass
 
     def is_some_queue_busy(self):
@@ -120,18 +123,21 @@ class Carrefour:
                 self.dropped_clients.append(client)
                 self.clients.pop(idx)
         return
+    
+    def get_useless_queues(self):
+        return self.queues.count(None)
 
     def run(self) -> List[ClientType]:
         # For + If instead of while avoids infinite loops
-
-        while len(self.clients) > 0 or self.is_some_queue_busy():
-            self.drop_clients()
-            self.empty_finished_queues()
-            self.assign_client_to_queue()
-
-            self.time += 1
+        for _ in range (self.max_time):
+            while len(self.clients) > 0 or self.is_some_queue_busy():
+                self.drop_clients()
+                self.empty_finished_queues()
+                self.assign_client_to_queue()
+                self.useless_queues_in_time.append(self.get_useless_queues())
+                self.time += 1
 
         self.completed.sort()
-        return self.completed
+        return self
 
     pass

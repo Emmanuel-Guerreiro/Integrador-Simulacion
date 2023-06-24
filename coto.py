@@ -64,16 +64,13 @@ class Coto:
                     queue.pop(idx)
         return
     
-    # def any_queue_has_clients(self):
-    #     return len([queue for queue in self.queues if len(queue) > 0]) > 0
-    
-    # def useless_queues(self):
-    #     return len([queue for queue in self.queues if len(queue) > 0])
+    def useless_queues(self):
+        return len(self.queues)-len([queue for queue in self.queues if len(queue) > 0])
 
     def run(self):
 
         for _ in range(self.max_time):
-            if len(self.clients) > 0:# and self.any_queue_has_clients():
+            if len(self.clients) > 0:
                 # Add client to the queue with less clients
                 self.add_client_to_queue(self.clients)
                 # Drop the clients that got tired of waiting from the queues
@@ -82,8 +79,11 @@ class Coto:
                 for queue in self.queues:
                     self.attend_client(queue)
                     self.check_queue(queue)
+                #Count the number of queues that are not being used at each time t
+                self.useless_queues_in_time.append(self.useless_queues())
+                
                 self.time += 1
 
-        return self.completed
+        return self
 
     pass
