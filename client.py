@@ -49,11 +49,9 @@ class Client:
         if t <= 1:
             return self.drop_rate
 
-        return (
-            math.log(1 + self.drop_rate * (t - self.arrival_time), 1000)
-            if math.log(1 + self.drop_rate * (t - self.arrival_time), 1000) < 1
-            else 1
-        )
+        self.drop_rate = self.drop_rate + math.log(1 + t - self.arrival_time, 1000)
+
+        return self.drop_rate if self.drop_rate < 1 else 1
 
     def will_drop_on_time(self, t) -> bool:
         """Will drop arrived clients based on the drop rate at the

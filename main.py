@@ -2,7 +2,7 @@ from typing import List
 
 import numpy as np
 
-from client import ClientType
+from client import Client, ClientType
 from simulation import Simulation
 from util import Plot, Util
 
@@ -207,9 +207,26 @@ def run_with_all_variable(
 
 
 if __name__ == "__main__":
+    import os
 
-    run_with_all_variable(
-        n_queues=[2, 4, 6, 8, 10, 12],
-        n_clients=[200, 400, 600, 800, 1000],
-        service_time_mean=5,
-    )
+    import matplotlib.pyplot as plt
+
+    dt = []
+    for t in range(1000):
+        c = Client(0, 5)
+        dt.append(c.get_drop_rate(t))
+
+    fig, ax = plt.subplots()
+    ax.set_title("Probabilidad de abandono en funcion del tiempo")
+    ax.plot(dt)
+    ax.set_xlabel("Tiempo [minutos]")
+    ax.set_ylabel("Probabilidad de abandono")
+    fig.tight_layout()
+    save_path = os.path.join(os.getcwd(), "results", "probabilidad-abandono" + ".png")
+    plt.savefig(save_path)
+    plt.close()
+    # run_with_all_variable(
+    #     n_queues=[2, 4, 6, 8, 10, 12],
+    #     n_clients=[200, 400, 600, 800, 1000],
+    #     service_time_mean=5,
+    # )
